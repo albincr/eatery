@@ -32,6 +32,20 @@ platform :ios do
     )
     ENV["TODAY_EXT_UDID"] = udid
 
+    udid = sigh(
+      app_identifier: "com.cuappdev.cuad-eatery.Watchkit-App", 
+      output_path: "./fastlane/profiles",
+      provisioning_name: "Eatery Watchkit App"
+    )
+    ENV["WATCHKIT_APP_UDID"] = udid
+
+    udid = sigh(
+      app_identifier: "com.cuappdev.cuad-eatery.Watchkit-App.Watchkit-Extension", 
+      output_path: "./fastlane/profiles",
+      provisioning_name: "Eatery Watchkit Extension"
+    )
+    ENV["WATCHKIT_EXT_UDID"] = udid
+
     # Use this to select the correct version of xcode
     # xcode_select "/Applications/Xcode.app"
 
