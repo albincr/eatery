@@ -8,20 +8,32 @@
 
 import UIKit
 
-private let reuseIdentifier = "Cell"
+private let reuseIdentifier = "BeaconsFeedCell"
+
+public enum BeaconType: String {
+    case Attending = "Attending"
+    case Feed = "Feed"
+}
 
 class BeaconsFeedViewController: UICollectionViewController {
-
+    
+    private var sectionHeaderHeight: CGFloat = 40.0
+    private var sections: [BeaconType] = [.Attending, .Feed]
+    private var eventsAttending: [BeaconsEvent] = []
+    private var eventsNewsFeed: [BeaconsEvent] = [] //Organized by date
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
 
-        // Register cell classes
+        // Register cell classes & nib
         self.collectionView!.registerClass(UICollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
+        self.collectionView?.registerNib(UINib(nibName: "BeaconsFeedCell", bundle: nil), forCellWithReuseIdentifier: reuseIdentifier)
 
-        // Do any additional setup after loading the view.
+        //View appearance
+        view.backgroundColor = UIColor(red: 245/255.0, green: 245/255.0, blue: 245/255.0, alpha: 1.0)
     }
 
     override func didReceiveMemoryWarning() {
@@ -29,35 +41,62 @@ class BeaconsFeedViewController: UICollectionViewController {
         // Dispose of any resources that can be recreated.
     }
 
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using [segue destinationViewController].
-        // Pass the selected object to the new view controller.
-    }
-    */
-
     // MARK: UICollectionViewDataSource
 
     override func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
-        return 0
+        var section = 0
+        if !eventsAttending.isEmpty{
+            section += 1
+        }
+        if !eventsNewsFeed.isEmpty{
+            section += 1
+        }
+        
+        return section
+        
     }
-
 
     override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of items
-        return 0
+        switch sections[section]{
+        case .Attending: return eventsAttending.count
+        case .Feed: return eventsNewsFeed.count
+        default: return 1
+        }
     }
-
+    
     override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier(reuseIdentifier, forIndexPath: indexPath)
-    
-        // Configure the cell
-    
+        let cell = collectionView.dequeueReusableCellWithReuseIdentifier(reuseIdentifier, forIndexPath: indexPath) as! BeaconsFeedCell
+        var event = eventsAttending[indexPath.row]
+        switch sections[indexPath.section]{
+        case .Attending:
+            event = eventsAttending[indexPath.row]
+        case .Feed:
+            event = eventsNewsFeed[indexPath.row]
+        default:
+            event = eventsAttending[indexPath.row]
+        }
+        
+        cell.time.text = getTimeFromDate(event.date)
+        cell.eventTitle.text = event.title
+        cell.creatorName.text = event.creator
+        //Set creator pro pic
+        cell.creatorProPic.image = UIImage(named: "\(event.creator)")
+        //Set joinbutton based if joined or not
+        if event.joined{
+            cell.joinButton.setImage(UIImage(named: "Joined"), forState: .Normal)
+        } else{
+            cell.joinButton.setImage(UIImage(named: "NotJoined"), forState: .Normal)
+        }
         return cell
+    }
+    
+    private func getTimeFromDate(date: NSDate) -> String{
+        let calendar = NSCalendar.currentCalendar()
+        let dateComponents = calendar.components([NSCalendarUnit.Day, NSCalendarUnit.Month, NSCalendarUnit.Year, NSCalendarUnit.WeekOfYear, NSCalendarUnit.Hour, NSCalendarUnit.Minute, NSCalendarUnit.Second, NSCalendarUnit.Nanosecond], fromDate: date)
+        calendar.dateFromComponents(dateComponents)
+        let dateFormatter = NSDateFormatter()
+        dateFormatter.dateFormat = "h:mm"
+        return dateFormatter.stringFromDate(date)
     }
 
     // MARK: UICollectionViewDelegate
