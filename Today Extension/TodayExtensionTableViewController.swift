@@ -17,10 +17,12 @@ class TodayExtensionTableViewController: UITableViewController, NCWidgetProvidin
     var data: NSData?
     var favs: [AnyObject]?
     var noFavsView: UIView?
+    let defs = NSUserDefaults(suiteName: "group.org.cuappdev.eatery.TodayExtensionSharingDefaults")!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        let defs = NSUserDefaults(suiteName: "group.com.cuappdev.eatery")!
+        print("viewDidLoad")
+        defs.synchronize()
         favs = defs.arrayForKey("favorites")
         
         let todayCell = UINib(nibName: "TodayExtensionTableViewCell", bundle: nil)
@@ -39,7 +41,7 @@ class TodayExtensionTableViewController: UITableViewController, NCWidgetProvidin
         getData()
         
     }
-    
+
     // MARK: - Table view data source
     
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
@@ -82,6 +84,7 @@ class TodayExtensionTableViewController: UITableViewController, NCWidgetProvidin
     }
     
     func widgetPerformUpdateWithCompletionHandler(completionHandler: ((NCUpdateResult) -> Void)) {
+        print("here")
         completionHandler(NCUpdateResult.NewData)
     }
     
@@ -100,14 +103,16 @@ class TodayExtensionTableViewController: UITableViewController, NCWidgetProvidin
                 let eateries = json["data"]["eateries"]
                 for eateryJSON in eateries {
                     let eatery = LiteEatery(json: eateryJSON.1)
-//                    if (self.favs?.contains({ x -> Bool in
-//                        print(eatery.slug)
-//                        return eatery.slug == x as! String
-//                    }) != nil) {
-//                        self.liteEateries.append(eatery)
-//                    }
+                    //start
+                  if (self.favs?.contains({ x -> Bool in
+                        print(eatery.slug)
+                        return eatery.slug == x as! String
+                    }) != nil) {
+                        self.liteEateries.append(eatery)
+                    }
                     
-//                    self.liteEateries.append(eatery)
+                 self.liteEateries.append(eatery)
+//end
                     
                 }
                 

@@ -46,6 +46,14 @@ extension Eatery {
     var favorite: Bool {
         get {
             let ar = NSUserDefaults.standardUserDefaults().stringArrayForKey("favorites") ?? []
+            let ar2 = NSUserDefaults(suiteName: "group.cuappdev.TodayExtensionSharingDefaults")
+            ar2?.synchronize()
+            /*if let testFavorites =  ar2?.objectForKey("favorites") as? String {
+                print(testFavorites)
+            }*/
+            let tempVar = ar2?.stringArrayForKey("favorites") ?? []
+            print("ar1: \(ar)")
+            print("tempVar: \(tempVar)")
             return ar.contains {
                 $0 == slug
             }
@@ -53,9 +61,12 @@ extension Eatery {
         
         set {
             var ar = NSUserDefaults.standardUserDefaults().stringArrayForKey("favorites") ?? []
+            let ar2 = NSUserDefaults(suiteName: "group.cuappdev.TodayExtensionSharingDefaults")
             let contains = self.favorite
             if (newValue && !contains) {
                 ar.append(self.slug)
+                ar2?.setObject(ar, forKey: "favorites")
+                ar2?.synchronize()
             } else if (!newValue && contains) {
                 let idx = ar.indexOf {
                     $0 == slug
@@ -133,12 +144,12 @@ extension Eatery {
             if let time = currentTime {
                 mergedTimes.append(time)
             }
-            
+            /*
             resultString = ""
             for (start, end) in mergedTimes {
                 if resultString != "" { resultString += ", " }
                 resultString += dateConverter(start, date2: end)
-            }
+            }*/
         }
         
         return resultString
