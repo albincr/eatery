@@ -11,6 +11,12 @@ import OnePasswordExtension
 
 class SignupViewController: UIViewController {
     
+    var eatNow: EateriesGridViewController!
+    private let defaults = NSUserDefaults.standardUserDefaults()
+    
+    private var width: CGFloat!
+    private var height: CGFloat!
+    
     var eateryLabel: UILabel!
     var eateryIcon: UIImageView!
     var fNameField: UITextField!
@@ -25,24 +31,18 @@ class SignupViewController: UIViewController {
     var exitButton: UIButton!
     var onepasswordButton: UIButton!
     
-    var width: CGFloat!
-    var height: CGFloat!
-    
-    var eatNow: EateriesGridViewController!
-    
-    let masterLogin = ["1234567890":"cuappdev"]
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         print("Loading")
         
         self.view.backgroundColor = .eateryBlue()
+        self.navigationController?.navigationBarHidden = true
         
         width = self.view.bounds.width
         height = self.view.bounds.height
         
         exitButton = UIButton(frame: CGRect(origin: CGPointMake(width-40, 30), size: CGSizeMake(25, 25)))
-        exitButton.setImage(UIImage(named: "exitIcon"), forState: .Normal)
+        exitButton.setImage(UIImage(named: "closeIcon"), forState: .Normal)
         exitButton.layer.opacity = 0
         exitButton.addTarget(self, action: #selector(SignupViewController.exitToEatnow(_:)), forControlEvents: .TouchUpInside)
         self.view.addSubview(exitButton)
@@ -64,11 +64,10 @@ class SignupViewController: UIViewController {
         self.view.addSubview(fNameField)
         
         onepasswordButton = UIButton(frame: CGRect(x: passwordField.frame.origin.x + passwordField.frame.width + 5, y: passwordField.frame.origin.y + 5, width: 30, height: 30))
-        onepasswordButton.setImage(UIImage(named: "onepasswordButtonLight"), forState: .Normal)
+        onepasswordButton.setImage(UIImage(named: "onepassword-button-light"), forState: .Normal)
         onepasswordButton.addTarget(self, action: #selector(SignupViewController.onepasswordPressed(_:)), forControlEvents: .TouchUpInside)
+//        onepasswordButton.hidden = !OnePasswordExtension.sharedExtension().isAppExtensionAvailable()
         self.view.addSubview(onepasswordButton)
-        
-        //        onepasswordButton.hidden = !OnePasswordExtension.sharedExtension().isAppExtensionAvailable()
         
         for view in self.view.subviews{
             let textField = (view as? UITextField)
@@ -78,9 +77,7 @@ class SignupViewController: UIViewController {
             textField?.clearsOnBeginEditing = false
             textField?.clearButtonMode = .WhileEditing
             textField?.delegate = self
-            textField?.autocapitalizationType = .None
-            textField?.autocorrectionType = .No
-            textField?.spellCheckingType = .No
+            if textField != passwordField { textField?.autocapitalizationType = .Words }
             textField?.keyboardAppearance = .Dark
             textField?.font = UIFont(name: "HelveticaNeue-Medium", size: 14)
             let leftView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: 40))
@@ -88,7 +85,7 @@ class SignupViewController: UIViewController {
             textField?.leftViewMode = .Always
         }
         
-        eateryIcon = UIImageView(frame: CGRect(x: self.width/2-40, y: 70, width: 80, height: 100))
+        eateryIcon = UIImageView(frame: CGRect(x: self.width/2-40, y: 40, width: 80, height: 100))
         eateryIcon.image = UIImage(named: "eateryLoginIcon")
         eateryIcon.layer.opacity = 0
         self.view.addSubview(eateryIcon)
@@ -103,26 +100,26 @@ class SignupViewController: UIViewController {
         self.view.addSubview(eateryLabel)
         
         // Initialize login button
-        signupButton = UIButton(frame: CGRect(x: width/3, y: height-120, width: width/3, height: 40))
+        signupButton = UIButton(frame: CGRect(x: width/3, y: height-80, width: width/3, height: 40))
         signupButton.backgroundColor = UIColor.whiteColor()
         signupButton.layer.borderColor = UIColor.whiteColor().CGColor
         signupButton.layer.borderWidth = 1
         signupButton.setTitleColor(.eateryBlue(), forState: .Normal)
         signupButton.setTitle("Sign Up", forState: .Normal)
         signupButton.titleLabel!.font =  UIFont(name: "HelveticaNeue-Medium", size: 16)
-        signupButton.layer.opacity = 1
+        signupButton.layer.opacity = 0
         signupButton.addTarget(self, action: #selector(SignupViewController.signupPressed(_:)), forControlEvents: .TouchUpInside)
         self.view.addSubview(signupButton)
         
-        loginLabel = UILabel(frame: CGRect(x: width/2-105, y: height, width: 130, height: 20))
+        loginLabel = UILabel(frame: CGRect(x: width/2-105, y: height-35, width: 130, height: 20))
         loginLabel.textAlignment = .Center
         loginLabel.text = "Already signed up?"
         loginLabel.textColor = UIColor.whiteColor()
         loginLabel.font = UIFont(name: "HelveticaNeue-Medium", size: 14)
-        loginButton = UIButton(frame: CGRect(x: width/2+25, y: height, width: 80, height: 20))
+        loginButton = UIButton(frame: CGRect(x: width/2+25, y: height-35, width: 80, height: 20))
         loginButton.setTitle("Login here.", forState: .Normal)
         loginButton.titleLabel!.font =  UIFont(name: "HelveticaNeue-Medium", size: 14)
-        loginButton.addTarget(self, action: #selector(SignupViewController.loginPressed(_:)), forControlEvents: .TouchUpInside)
+        loginButton.addTarget(self, action: #selector(SignupViewController.goToLoginScreen(_:)), forControlEvents: .TouchUpInside)
         self.view.addSubview(loginLabel)
         self.view.addSubview(loginButton)
         
@@ -135,14 +132,16 @@ class SignupViewController: UIViewController {
     
     override func viewDidAppear(animated: Bool) {
         
-        UIView.animateWithDuration(1.0, delay: 0.5, options: .CurveEaseIn, animations: {
+        UIView.animateWithDuration(0.8, delay: 0.3, options: .CurveEaseIn, animations: {
             self.eateryLabel.layer.opacity = 1
             self.eateryIcon.layer.opacity = 1
         }) { (finished) in
             UIView.animateWithDuration(0.7, animations: {
-                self.loginLabel.frame = CGRect(x: self.width/2-105, y: self.height-40, width: 130, height: 20)
-                self.loginButton.frame = CGRect(x: self.width/2+25, y: self.height-40, width: 80, height: 20)
+//                self.loginLabel.frame = CGRect(x: self.width/2-105, y: self.height-35, width: 130, height: 20)
+//                self.loginButton.frame = CGRect(x: self.width/2+25, y: self.height-35, width: 80, height: 20)
                 self.exitButton.layer.opacity = 1
+                self.signupButton.layer.opacity = 1
+                self.signupButton.frame = CGRect(x: self.width/3, y: self.height-110, width: self.width/3, height: 40)
             })
         }
     }
@@ -155,12 +154,12 @@ class SignupViewController: UIViewController {
             let animationCurveRaw = animationCurveRawNSN?.unsignedLongValue ?? UIViewAnimationOptions.CurveEaseInOut.rawValue
             let animationCurve:UIViewAnimationOptions = UIViewAnimationOptions(rawValue: animationCurveRaw)
             if endFrame?.origin.y >= UIScreen.mainScreen().bounds.size.height {
-                self.signupButton.frame = CGRect(x: width/3, y: height - 120, width: width/3, height: 40)
+                self.signupButton.frame = CGRect(x: width/3, y: height - 110, width: width/3, height: 40)
                 self.passwordField.frame = CGRect(x: width/6, y: height/2 + 80, width: width*2/3, height: 40)
                 self.phoneNumberField.frame = CGRect(x: width/6, y: passwordField.frame.origin.y - 50, width: width*2/3, height: 40)
                 self.lNameField.frame = CGRect(x: width/6, y: phoneNumberField.frame.origin.y - 50, width: width*2/3, height: 40)
                 self.fNameField.frame = CGRect(x: width/6, y: lNameField.frame.origin.y - 50, width: width*2/3, height: 40)
-                self.eateryIcon.frame = CGRect(x: width/2-40, y: 70, width: 80, height: 100)
+                self.eateryIcon.frame = CGRect(x: width/2-40, y: 40, width: 80, height: 100)
                 self.eateryLabel.frame = CGRect(x: width/3, y: eateryIcon.frame.origin.y + 120, width: width/3, height: 40)
             } else {
                 self.signupButton.frame = CGRect(x: width/3, y: height - (endFrame?.size.height)! - 50, width: width/3, height: 40)
@@ -171,6 +170,7 @@ class SignupViewController: UIViewController {
                 self.eateryLabel.frame = CGRect(x: width/3, y: fNameField.frame.origin.y - 50, width: width/3, height: 40)
                 self.eateryIcon.frame = CGRect(x: width/2-40, y: eateryLabel.frame.origin.y - 110, width: 80, height: 100)
             }
+            self.onepasswordButton.frame = CGRect(x: passwordField.frame.origin.x + passwordField.frame.width + 5, y: passwordField.frame.origin.y + 5, width: 30, height: 30)
             UIView.animateWithDuration(duration,
                                        delay: NSTimeInterval(0),
                                        options: animationCurve,
@@ -180,31 +180,63 @@ class SignupViewController: UIViewController {
     }
     
     @IBAction func onepasswordPressed(sender: UIButton){
-        print("One password")
-        OnePasswordExtension.sharedExtension().findLoginForURLString("app://org.cuappdev.eatery", forViewController: self, sender: sender) { (loginDictionary, error) in
-            if loginDictionary!.count == 0{
-                if error!.code != Int(AppExtensionErrorCodeCancelledByUser){
-                    NSLog("Error invoking 1Password App Extension for find login: \(error)")
+        
+        if !checkInputs(){ return }
+        
+        let signupDetails:[String: AnyObject] = [
+            AppExtensionTitleKey: "Eatery",
+            AppExtensionUsernameKey: self.phoneNumberField.text!,
+            AppExtensionPasswordKey: self.passwordField.text!,
+            AppExtensionNotesKey: "Saved with the Eatery app",
+            AppExtensionSectionTitleKey: "Eatery App",
+            AppExtensionFieldsKey: [
+                "firstname" : self.fNameField.text!,
+                "lastname" : self.lNameField.text!
+            ]
+        ]
+        
+        OnePasswordExtension.sharedExtension().storeLoginForURLString("app://org.cuappdev.eatery", loginDetails: signupDetails, passwordGenerationOptions: nil, forViewController: self, sender: sender) { (loginDictionary, error) in
+            if loginDictionary == nil {
+                if error!.code != Int(AppExtensionErrorCodeCancelledByUser) {
+                    print("Error invoking 1Password App Extension for find login: \(error)")
                 }
+                return
             }
-            print("Yoooo")
+            
+            self.phoneNumberField.text = loginDictionary?[AppExtensionUsernameKey] as? String
+            self.passwordField.text = loginDictionary?[AppExtensionPasswordKey] as? String
+            self.fNameField.text = loginDictionary?[AppExtensionReturnedFieldsKey]?["firstname"] as? String
+            self.lNameField.text = loginDictionary?[AppExtensionReturnedFieldsKey]?["lastname"] as? String
+            
+            self.showSuccessfulStorageAlert("Externally stored login credentials.")
         }
     }
     
     // Display error message or try to login
     @IBAction func signupPressed(sender: UIButton){
-        if fNameField.text == ""{
-            fNameField.becomeFirstResponder()
-        } else if lNameField.text == ""{
-            lNameField.becomeFirstResponder()
-        } else if phoneNumberField.text == ""{
-            phoneNumberField.becomeFirstResponder()
-        } else if passwordField.text == ""{
-            passwordField.becomeFirstResponder()
-        }
+        print("Signing up!!")
+        if !checkInputs(){ return }
+        
+        // Validate inputs
+        // Validate phone number
+        // Push to beacons screen
+        
+        // Store name, and number
+//        if defaults.objectForKey("firstName") == nil{
+            defaults.setValue(fNameField.text, forKey: "firstName")
+//        }
+//        if defaults.valueForKey("lastName") == nil{
+            defaults.setValue(lNameField.text, forKey: "lastName")
+//        }
+//        if defaults.valueForKey("phoneNumber") == nil{
+            defaults.setValue(phoneNumberField.text, forKey: "phoneNumber")
+//        }
+        defaults.setValue(passwordField.text, forKey: "password")
+        
+        self.checkIfStorageWorked()
     }
     
-    @IBAction func loginPressed(sender: UIButton){
+    @IBAction func goToLoginScreen(sender: UIButton){
         let loginVC = LoginViewController()
         loginVC.eatNow = self.eatNow
         self.navigationController?.pushViewController(loginVC, animated: true)
@@ -215,33 +247,50 @@ class SignupViewController: UIViewController {
         self.navigationController?.pushViewController(eatNow, animated: true)
     }
     
-    // Called when fields are fully filled in
-    //    func tryToLogin(){
-    //        // Animate login button
-    //        UIView.animateWithDuration(1.2, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0, options: .CurveEaseIn, animations: {
-    //            let originalFrame = self.signupButton.frame
-    //            self.signupButton.frame = CGRect(x: originalFrame.origin.x, y: originalFrame.origin.y + 70, width: originalFrame.width, height: originalFrame.height)
-    //            self.signupButton.layer.opacity = 0.4
-    //            self.spinImage.frame = CGRect(x: self.width/2-40, y: 60, width: 80, height: 80)
-    //            self.spinImage.layer.opacity = 1
-    //        }) { (finished) -> Void in
-    //            let key = self.phoneNumberField.text!
-    //            if self.masterLogin[key] == self.passwordField.text!{
-    //                self.secureLogin()
-    //            }else{
-    //                UIView.animateWithDuration(1.3, delay: 0.5, usingSpringWithDamping: 0.8, initialSpringVelocity: 0, options: .CurveEaseIn, animations: {
-    //                    let originalFrame = self.signupButton.frame
-    //                    self.signupButton.frame = CGRect(x: originalFrame.origin.x, y: originalFrame.origin.y - 70, width: originalFrame.width, height: originalFrame.height)
-    //                    self.signupButton.layer.opacity = 1.0
-    //                    self.spinImage.layer.opacity = 0
-    //                }) { (finished) -> Void in
-    //                    //                            self.displayErrorMessage(3)
-    //                    self.spinImage.frame = CGRect(x: self.width/2-40, y: -80, width: 80, height: 80)
-    //                }
-    //            }
-    //        }
-    //        spinImage.rotate360Degrees()
-    //    }
+    func checkInputs() -> Bool {
+        if fNameField.text == ""{
+            fNameField.becomeFirstResponder()
+            return false
+        } else if lNameField.text == ""{
+            lNameField.becomeFirstResponder()
+            return false
+        } else if phoneNumberField.text == ""{
+            phoneNumberField.becomeFirstResponder()
+            return false
+        } else if passwordField.text == ""{
+            passwordField.becomeFirstResponder()
+            return false
+        }
+        return true
+    }
+    
+    func showSuccessfulStorageAlert(message: String){
+        let alertController = UIAlertController(title: "Notification", message: message, preferredStyle: UIAlertControllerStyle.Alert)
+        
+        let dismissAction = UIAlertAction(title: "OK", style: .Default){ (action) in
+            self.signupPressed(self.signupButton)
+        }
+        
+        alertController.addAction(dismissAction)
+        self.presentViewController(alertController, animated: true, completion: nil)
+    }
+    
+    func checkIfStorageWorked(){
+        var message = ""
+        message += "First: \(defaults.objectForKey("firstName")), "
+        message += "Last: \(defaults.valueForKey("lastName")), "
+        message += "Number: \(defaults.valueForKey("phoneNumber"))"
+        message += "Pswd: \(defaults.valueForKey("password"))"
+
+        let alertController = UIAlertController(title: "Checking Defaults", message: message, preferredStyle: UIAlertControllerStyle.Alert)
+        
+        let dismissAction = UIAlertAction(title: "OK", style: .Default) { (action) in
+            print("Done")
+        }
+        
+        alertController.addAction(dismissAction)
+        self.presentViewController(alertController, animated: true, completion: nil)
+    }
     
     //Toggle keyboard when background tapped
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {

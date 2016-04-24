@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import OnePasswordExtension
 
 class LoginViewController: UIViewController {
     
@@ -27,21 +28,15 @@ class LoginViewController: UIViewController {
     
     var eatNow: EateriesGridViewController!
     
-    let masterLogin = ["1234567890":"cuappdev"]
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         print("Loading")
         
         self.view.backgroundColor = .eateryBlue()
+        self.navigationController?.navigationBarHidden = true
         
         width = self.view.bounds.width
         height = self.view.bounds.height
-        
-        exitButton = UIButton(frame: CGRect(origin: CGPointMake(width-40, 30), size: CGSizeMake(25, 25)))
-        exitButton.setImage(UIImage(named: "exitIcon"), forState: .Normal)
-        exitButton.addTarget(self, action: #selector(LoginViewController.exitToEatnow(_:)), forControlEvents: .TouchUpInside)
-        self.view.addSubview(exitButton)
         
         // Initialize username and password textfields
         passwordField = UITextField(frame: CGRect(x: width/6, y: height/2 + 50, width: width*2/3, height: 40))
@@ -54,8 +49,9 @@ class LoginViewController: UIViewController {
         self.view.addSubview(phoneNumberField)
         
         onepasswordButton = UIButton(frame: CGRect(x: passwordField.frame.origin.x + passwordField.frame.width + 5, y: passwordField.frame.origin.y + 5, width: 30, height: 30))
-        onepasswordButton.setImage(UIImage(named: "onepasswordButtonLight"), forState: .Normal)
+        onepasswordButton.setImage(UIImage(named: "onepassword-button-light"), forState: .Normal)
         onepasswordButton.addTarget(self, action: #selector(LoginViewController.onepasswordPressed(_:)), forControlEvents: .TouchUpInside)
+//        onepasswordButton.hidden = !OnePasswordExtension.sharedExtension().isAppExtensionAvailable()
         self.view.addSubview(onepasswordButton)
         
         for view in self.view.subviews{
@@ -89,7 +85,7 @@ class LoginViewController: UIViewController {
         self.view.addSubview(eateryLabel)
         
         // Initialize login button
-        loginButton = UIButton(frame: CGRect(x: width/3, y: height-120, width: width/3, height: 40))
+        loginButton = UIButton(frame: CGRect(x: width/3, y: height-110, width: width/3, height: 40))
         loginButton.backgroundColor = UIColor.whiteColor()
         loginButton.layer.borderColor = UIColor.whiteColor().CGColor
         loginButton.layer.borderWidth = 1
@@ -99,6 +95,12 @@ class LoginViewController: UIViewController {
         loginButton.layer.opacity = 1
         loginButton.addTarget(self, action: #selector(LoginViewController.loginPressed(_:)), forControlEvents: .TouchUpInside)
         self.view.addSubview(loginButton)
+        
+        exitButton = UIButton(frame: CGRect(x: width/2-40, y: height-35, width: 80, height: 20))
+        exitButton.setTitle("Login Later.", forState: .Normal)
+        exitButton.titleLabel!.font =  UIFont(name: "HelveticaNeue-Medium", size: 14)
+        exitButton.addTarget(self, action: #selector(SignupViewController.exitToEatnow(_:)), forControlEvents: .TouchUpInside)
+        self.view.addSubview(exitButton)
         
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(LoginViewController.keyboardToggle(_:)), name: UIKeyboardWillChangeFrameNotification, object: nil)
@@ -116,20 +118,39 @@ class LoginViewController: UIViewController {
             let animationCurveRaw = animationCurveRawNSN?.unsignedLongValue ?? UIViewAnimationOptions.CurveEaseInOut.rawValue
             let animationCurve:UIViewAnimationOptions = UIViewAnimationOptions(rawValue: animationCurveRaw)
             if endFrame?.origin.y >= UIScreen.mainScreen().bounds.size.height {
-                self.loginButton.frame = CGRect(x: width/3, y: height - 120, width: width/3, height: 40)
-                self.passwordField.frame = CGRect(x: width/6, y: height/2 + 50, width: width*2/3, height: 40)
+                loginButton.frame = CGRect(x: width/3, y: height - 110, width: width/3, height: 40)
+                passwordField.frame = CGRect(x: width/6, y: height/2 + 50, width: width*2/3, height: 40)
+                phoneNumberField.frame = CGRect(x: width/6, y: passwordField.frame.origin.y - 50, width: width*2/3, height: 40)
+                eateryIcon.frame = CGRect(x: width/2-40, y: 70, width: 80, height: 100)
+                eateryLabel.frame = CGRect(x: width/3, y: eateryIcon.frame.origin.y + 120, width: width/3, height: 40)
             } else {
-                self.loginButton.frame = CGRect(x: width/3, y: height - (endFrame?.size.height)! - 50, width: width/3, height: 40)
-                self.passwordField.frame = CGRect(x: width/6, y: loginButton.frame.origin.y - 50, width: width*2/3, height: 40)
+                loginButton.frame = CGRect(x: width/3, y: height - (endFrame?.size.height)! - 50, width: width/3, height: 40)
+                passwordField.frame = CGRect(x: width/6, y: loginButton.frame.origin.y - 50, width: width*2/3, height: 40)
+                phoneNumberField.frame = CGRect(x: width/6, y: passwordField.frame.origin.y - 50, width: width*2/3, height: 40)
+                if phoneNumberField.frame.origin.y < eateryLabel.frame.origin.y + 50{
+                    eateryLabel.frame = CGRect(x: width/3, y: phoneNumberField.frame.origin.y - 50, width: width/3, height: 40)
+                    eateryIcon.frame = CGRect(x: width/2-40, y: eateryLabel.frame.origin.y - 110, width: 80, height: 100)
+                }
             }
-            self.phoneNumberField.frame = CGRect(x: width/6, y: passwordField.frame.origin.y - 50, width: width*2/3, height: 40)
+            self.onepasswordButton.frame = CGRect(x: passwordField.frame.origin.x + passwordField.frame.width + 5, y: passwordField.frame.origin.y + 5, width: 30, height: 30)
             UIView.animateWithDuration(duration, delay: NSTimeInterval(0), options: animationCurve,
                                        animations: { self.view.layoutIfNeeded() }, completion: nil)
         }
     }
     
     @IBAction func onepasswordPressed(sender: UIButton){
-        print("One Password!")
+    
+        OnePasswordExtension.sharedExtension().findLoginForURLString("app://org.cuappdev.eatery", forViewController: self, sender: sender) { (loginDictionary, error) in
+            if loginDictionary == nil {
+                if error!.code != Int(AppExtensionErrorCodeCancelledByUser) {
+                    print("Error invoking 1Password App Extension for find login: \(error)")
+                }
+                return
+            }
+            
+            self.phoneNumberField.text = loginDictionary?[AppExtensionUsernameKey] as? String
+            self.passwordField.text = loginDictionary?[AppExtensionPasswordKey] as? String
+        }
     }
     
     // Display error message or try to login
@@ -140,11 +161,49 @@ class LoginViewController: UIViewController {
         } else if passwordField.text == ""{
             passwordField.becomeFirstResponder()
         }
+        
+        self.login(phoneNumberField.text!, password: passwordField.text!)
     }
     
     @IBAction func exitToEatnow(sender: UIButton){
         self.navigationController?.navigationBarHidden = false
         self.navigationController?.pushViewController(eatNow, animated: true)
+    }
+    
+    func checkInputs() -> Bool {
+        if phoneNumberField.text == ""{
+            phoneNumberField.becomeFirstResponder()
+            return false
+        } else if passwordField.text == ""{
+            passwordField.becomeFirstResponder()
+            return false
+        }
+        return true
+    }
+    
+    // TODO: Login functionality with backend
+    func login(number: String, password: String){
+        if number == NSUserDefaults.standardUserDefaults().valueForKey("phoneNumber") as? String && password == NSUserDefaults.standardUserDefaults().valueForKey("password") as? String{
+            let alertController = UIAlertController(title: "Login Successful", message: "YAY", preferredStyle: UIAlertControllerStyle.Alert)
+            
+            let dismissAction = UIAlertAction(title: "OK", style: .Default){ (action) in
+                print("Swag")
+            }
+            
+            alertController.addAction(dismissAction)
+            self.presentViewController(alertController, animated: true, completion: nil)
+        }
+        else {
+            let alertController = UIAlertController(title: "Login Failure", message: "Invalid phone number and password.", preferredStyle: UIAlertControllerStyle.Alert)
+            
+            let dismissAction = UIAlertAction(title: "Try Again", style: .Default){ (action) in
+                self.passwordField.text = ""
+                self.passwordField.becomeFirstResponder()
+            }
+            
+            alertController.addAction(dismissAction)
+            self.presentViewController(alertController, animated: true, completion: nil)
+        }
     }
     
     //Toggle keyboard when background tapped
