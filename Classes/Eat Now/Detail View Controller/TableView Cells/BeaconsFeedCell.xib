@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="9532" systemVersion="15D21" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="10116" systemVersion="15E65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9530"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
     </dependencies>
     <objects>
@@ -113,27 +113,39 @@
                             <constraint firstAttribute="height" constant="1" id="oLf-7V-RPQ"/>
                         </constraints>
                     </view>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Eat with me at Place" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ery-2F-cCG">
-                        <rect key="frame" x="158" y="39" width="156" height="20"/>
-                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
-                        <color key="textColor" name="secondaryLabelColor" catalog="System" colorSpace="catalog"/>
-                        <nil key="highlightedColor"/>
-                    </label>
-                    <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="I3K-9S-J4a">
-                        <rect key="frame" x="492" y="25" width="100" height="50"/>
-                        <constraints>
-                            <constraint firstAttribute="height" constant="50" id="Xod-6z-hRZ"/>
-                            <constraint firstAttribute="width" secondItem="I3K-9S-J4a" secondAttribute="height" multiplier="2:1" id="yyV-Kv-PZq"/>
-                        </constraints>
-                        <state key="normal" title="Join">
-                            <color key="titleColor" name="secondarySelectedControlColor" catalog="System" colorSpace="catalog"/>
-                        </state>
-                    </button>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CJ8-y6-AJt">
                         <rect key="frame" x="150" y="0.0" width="450" height="100"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Eat with me at Place" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ery-2F-cCG">
+                                <rect key="frame" x="8" y="40" width="156" height="20"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
+                                <color key="textColor" name="secondaryLabelColor" catalog="System" colorSpace="catalog"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="I3K-9S-J4a">
+                                <rect key="frame" x="412" y="35" width="30" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="Xod-6z-hRZ"/>
+                                    <constraint firstAttribute="width" secondItem="I3K-9S-J4a" secondAttribute="height" multiplier="2:1" id="yyV-Kv-PZq"/>
+                                </constraints>
+                                <state key="normal" title="Join">
+                                    <color key="titleColor" name="secondarySelectedControlColor" catalog="System" colorSpace="catalog"/>
+                                </state>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="Xod-6z-hRZ"/>
+                                        <exclude reference="yyV-Kv-PZq"/>
+                                    </mask>
+                                </variation>
+                            </button>
+                        </subviews>
                         <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="100" id="Jic-pC-gnX"/>
+                            <constraint firstItem="Ery-2F-cCG" firstAttribute="leading" secondItem="CJ8-y6-AJt" secondAttribute="leading" constant="8" id="SeD-ih-2Ce"/>
+                            <constraint firstItem="I3K-9S-J4a" firstAttribute="centerY" secondItem="CJ8-y6-AJt" secondAttribute="centerY" id="flD-gt-NmZ"/>
+                            <constraint firstAttribute="trailing" secondItem="I3K-9S-J4a" secondAttribute="trailing" constant="8" id="gLt-ej-u77"/>
+                            <constraint firstItem="Ery-2F-cCG" firstAttribute="centerY" secondItem="CJ8-y6-AJt" secondAttribute="centerY" id="rLL-rB-Yqy"/>
                         </constraints>
                     </view>
                 </subviews>
