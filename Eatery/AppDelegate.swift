@@ -48,7 +48,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         eatNow = EateriesGridViewController()
         eatNow.title = "Eateries"
       
-        let eatNavController = UINavigationController(rootViewController: eatNow)
+        let signupVC = SignupViewController()
+        signupVC.eatNow = eatNow
+        let eatNavController = UINavigationController(rootViewController: signupVC)
         eatNavController.navigationBar.barStyle = .Black
         
         window?.rootViewController = eatNavController

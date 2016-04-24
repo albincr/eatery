@@ -10,6 +10,7 @@ target 'Eatery' do
   pod 'Analytics/Segmentio'
   pod 'Tweaks'
   pod 'HanekeSwift'
+  pod '1PasswordExtension', :git => 'https://github.com/AgileBits/onepassword-app-extension.git', :branch => 'master'
   shared_pods
 end
 
