@@ -11,26 +11,33 @@ import OnePasswordExtension
 
 class LoginViewController: UIViewController {
     
-    var eateryLabel: UILabel!
-    var eateryIcon: UIImageView!
-    var fNameField: UITextField!
-    var lNameField: UITextField!
-    var phoneNumberField: UITextField!
-    var passwordField: UITextField!
-    var onepasswordButton: UIButton!
-    
-    var spinImage: UIImageView!
-    var loginButton: UIButton!
-    var exitButton: UIButton!
-    
-    var width: CGFloat!
-    var height: CGFloat!
-    
     var eatNow: EateriesGridViewController!
+    var signupVC: SignupViewController!
+    private let defaults = NSUserDefaults.standardUserDefaults()
+    private let onepassword = OnePasswordExtension.sharedExtension()
+    private let keychainWrapper = KeychainWrapper()
+    
+    private var width: CGFloat!
+    private var height: CGFloat!
+    
+    private var eateryLabel: UILabel!
+    private var eateryIcon: UIImageView!
+    private var phoneNumberField: UITextField!
+    private var passwordField: UITextField!
+    private var forgotPasswordButton: UIButton!
+    private var onepasswordButton: UIButton!
+    
+    private var numberPromptField: UITextField!
+    
+    private var spinImage: UIImageView!
+    private var loginButton: UIButton!
+    private var exitButton: UIButton!
+    private var goToSignupButton: UIButton!
+    private var goToSignupLabel: UILabel!
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        print("Loading")
         
         self.view.backgroundColor = .eateryBlue()
         self.navigationController?.navigationBarHidden = true
@@ -38,15 +45,26 @@ class LoginViewController: UIViewController {
         width = self.view.bounds.width
         height = self.view.bounds.height
         
+        exitButton = UIButton(frame: CGRect(origin: CGPointMake(width-40, 30), size: CGSizeMake(25, 25)))
+        exitButton.setImage(UIImage(named: "closeIconWhite"), forState: .Normal)
+        exitButton.layer.opacity = 1
+        exitButton.addTarget(self, action: #selector(LoginViewController.exitToEatnow(_:)), forControlEvents: .TouchUpInside)
+        self.view.addSubview(exitButton)
+        
         // Initialize username and password textfields
         passwordField = UITextField(frame: CGRect(x: width/6, y: height/2 + 50, width: width*2/3, height: 40))
         passwordField.attributedPlaceholder = NSAttributedString(string: "Password", attributes: [NSForegroundColorAttributeName: UIColor(white: 1, alpha: 0.6)])
         passwordField.secureTextEntry = true
         phoneNumberField = UITextField(frame: CGRect(x: self.width/6, y: passwordField.frame.origin.y - 50, width: width*2/3, height: 40))
         phoneNumberField.attributedPlaceholder = NSAttributedString(string: "Phone Number", attributes: [NSForegroundColorAttributeName: UIColor(white: 1, alpha: 0.6)])
-        phoneNumberField.keyboardType = .PhonePad
+        phoneNumberField.keyboardType = .NumberPad
+        forgotPasswordButton = UIButton(frame: CGRect(x: width/4, y: passwordField.frame.origin.y + 50, width: width/2, height: 20))
+        forgotPasswordButton.setTitle("Forgot your password?", forState: .Normal)
+        forgotPasswordButton.titleLabel!.font =  UIFont(name: "HelveticaNeue-Medium", size: 14)
+        forgotPasswordButton.addTarget(self, action: #selector(LoginViewController.forgotPassword(_:)), forControlEvents: .TouchUpInside)
         self.view.addSubview(passwordField)
         self.view.addSubview(phoneNumberField)
+        self.view.addSubview(forgotPasswordButton)
         
         onepasswordButton = UIButton(frame: CGRect(x: passwordField.frame.origin.x + passwordField.frame.width + 5, y: passwordField.frame.origin.y + 5, width: 30, height: 30))
         onepasswordButton.setImage(UIImage(named: "onepassword-button-light"), forState: .Normal)
@@ -73,14 +91,14 @@ class LoginViewController: UIViewController {
         }
         
         eateryIcon = UIImageView(frame: CGRect(x: self.width/2-40, y: 70, width: 80, height: 100))
-        eateryIcon.image = UIImage(named: "eateryLoginIcon")
+        eateryIcon.image = UIImage(named: "eateryIcon")
         self.view.addSubview(eateryIcon)
         
         eateryLabel = UILabel(frame: CGRect(x: width/3, y: eateryIcon.frame.origin.y + 120, width: width/3, height: 40))
-        eateryLabel.text = "EATERY"
+        eateryLabel.text = "Eatery"
         eateryLabel.backgroundColor = UIColor.clearColor()
         eateryLabel.textColor = UIColor.whiteColor()
-        eateryLabel.font = UIFont(name: "HelveticaNeue-Medium", size: 24)
+        eateryLabel.font = UIFont(name: "HelveticaNeue-Medium", size: 26)
         eateryLabel.textAlignment = .Center
         self.view.addSubview(eateryLabel)
         
@@ -96,11 +114,16 @@ class LoginViewController: UIViewController {
         loginButton.addTarget(self, action: #selector(LoginViewController.loginPressed(_:)), forControlEvents: .TouchUpInside)
         self.view.addSubview(loginButton)
         
-        exitButton = UIButton(frame: CGRect(x: width/2-40, y: height-35, width: 80, height: 20))
-        exitButton.setTitle("Login Later.", forState: .Normal)
-        exitButton.titleLabel!.font =  UIFont(name: "HelveticaNeue-Medium", size: 14)
-        exitButton.addTarget(self, action: #selector(SignupViewController.exitToEatnow(_:)), forControlEvents: .TouchUpInside)
-        self.view.addSubview(exitButton)
+        goToSignupButton = UIButton(frame: CGRect(x: width/2-68, y: height-40, width: 54, height: 25))
+        goToSignupButton.setTitle("Signup", forState: .Normal)
+        goToSignupButton.titleLabel!.font =  UIFont(name: "HelveticaNeue-Bold", size: 14)
+        goToSignupButton.addTarget(self, action: #selector(LoginViewController.goToSignupVC(_:)), forControlEvents: .TouchUpInside)
+        goToSignupLabel = UILabel(frame: CGRect(x: width/2-14, y: height-40, width: 90, height: 25))
+        goToSignupLabel.text = "for Beacons."
+        goToSignupLabel.font = UIFont(name: "HelveticaNeue-Medium", size: 14)
+        goToSignupLabel.textColor = UIColor.whiteColor()
+        self.view.addSubview(goToSignupButton)
+        self.view.addSubview(goToSignupLabel)
         
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(LoginViewController.keyboardToggle(_:)), name: UIKeyboardWillChangeFrameNotification, object: nil)
@@ -123,6 +146,7 @@ class LoginViewController: UIViewController {
                 phoneNumberField.frame = CGRect(x: width/6, y: passwordField.frame.origin.y - 50, width: width*2/3, height: 40)
                 eateryIcon.frame = CGRect(x: width/2-40, y: 70, width: 80, height: 100)
                 eateryLabel.frame = CGRect(x: width/3, y: eateryIcon.frame.origin.y + 120, width: width/3, height: 40)
+                forgotPasswordButton.layer.opacity = 1
             } else {
                 loginButton.frame = CGRect(x: width/3, y: height - (endFrame?.size.height)! - 50, width: width/3, height: 40)
                 passwordField.frame = CGRect(x: width/6, y: loginButton.frame.origin.y - 50, width: width*2/3, height: 40)
@@ -131,6 +155,7 @@ class LoginViewController: UIViewController {
                     eateryLabel.frame = CGRect(x: width/3, y: phoneNumberField.frame.origin.y - 50, width: width/3, height: 40)
                     eateryIcon.frame = CGRect(x: width/2-40, y: eateryLabel.frame.origin.y - 110, width: 80, height: 100)
                 }
+                forgotPasswordButton.layer.opacity = 0
             }
             self.onepasswordButton.frame = CGRect(x: passwordField.frame.origin.x + passwordField.frame.width + 5, y: passwordField.frame.origin.y + 5, width: 30, height: 30)
             UIView.animateWithDuration(duration, delay: NSTimeInterval(0), options: animationCurve,
@@ -155,19 +180,47 @@ class LoginViewController: UIViewController {
     
     // Display error message or try to login
     @IBAction func loginPressed(sender: UIButton){
-        print("Login")
-        if phoneNumberField.text == ""{
-            phoneNumberField.becomeFirstResponder()
-        } else if passwordField.text == ""{
-            passwordField.becomeFirstResponder()
+        if self.checkInputs(){
+            self.checkLogin(phoneNumberField.text!, password: passwordField.text!)
         }
-        
-        self.login(phoneNumberField.text!, password: passwordField.text!)
     }
     
     @IBAction func exitToEatnow(sender: UIButton){
         self.navigationController?.navigationBarHidden = false
         self.navigationController?.pushViewController(eatNow, animated: true)
+    }
+    
+    @IBAction func goToSignupVC(sender: UIButton){
+        if signupVC == nil{
+            print("First push to signupVC.")
+            signupVC = SignupViewController()
+            signupVC.eatNow = self.eatNow
+        }
+        self.navigationController?.pushViewController(signupVC, animated: true)
+    }
+    
+    @IBAction func forgotPassword(sender: UIButton){
+        // TODO: Send text message to phone number attached to Eatery
+        let msg = "Eatery will send you a text message containing your password."
+        let phoneNumberPrompt = UIAlertController(title: "Forgot Password?", message: msg, preferredStyle: UIAlertControllerStyle.Alert)
+        
+        let sendAction = UIAlertAction(title: "Get Password", style: .Default){ (action) in
+            // TODO: Backend function to get password reset
+            print("Find password for \(self.numberPromptField.text!)")
+        }
+        
+        func addTextField(textField: UITextField!){
+            textField.placeholder = "Phone Number"
+            textField.keyboardType = .NumberPad
+            textField.clearButtonMode = .WhileEditing
+            textField.delegate = self
+            self.numberPromptField = textField
+        }
+        
+        phoneNumberPrompt.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Default, handler: nil))
+        phoneNumberPrompt.addAction(sendAction)
+        phoneNumberPrompt.addTextFieldWithConfigurationHandler(addTextField)
+        self.presentViewController(phoneNumberPrompt, animated: true, completion: nil)
     }
     
     func checkInputs() -> Bool {
@@ -181,8 +234,9 @@ class LoginViewController: UIViewController {
         return true
     }
     
-    // TODO: Login functionality with backend
-    func login(number: String, password: String){
+    func checkLogin(number: String, password: String){
+        // TODO: Login functionality with backend
+        
         if number == NSUserDefaults.standardUserDefaults().valueForKey("phoneNumber") as? String && password == NSUserDefaults.standardUserDefaults().valueForKey("password") as? String{
             let alertController = UIAlertController(title: "Login Successful", message: "YAY", preferredStyle: UIAlertControllerStyle.Alert)
             
@@ -216,13 +270,32 @@ class LoginViewController: UIViewController {
 extension LoginViewController: UITextFieldDelegate{
     
     func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
-        if textField == self.phoneNumberField{
+        if textField == self.phoneNumberField || textField == self.numberPromptField{
             let currentCharacterCount = textField.text?.characters.count ?? 0
             if (range.length + range.location > currentCharacterCount){
                 return false
             }
             let newLength = currentCharacterCount + string.characters.count - range.length
             return newLength <= 10
+        }
+        return true
+    }
+    
+    func textFieldShouldEndEditing(textField: UITextField) -> Bool {
+        if textField == phoneNumberField{
+            if phoneNumberField.text == defaults.valueForKey("phoneNumber") as? String{
+                passwordField.text = keychainWrapper.myObjectForKey(kSecValueData) as? String
+            }
+        }
+        return true
+    }
+    
+    func textFieldShouldReturn(textField: UITextField) -> Bool {
+        if textField == phoneNumberField{
+            passwordField.becomeFirstResponder()
+        } else {
+            passwordField.resignFirstResponder()
+            self.loginPressed(loginButton)
         }
         return true
     }

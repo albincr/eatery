@@ -48,9 +48,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         eatNow = EateriesGridViewController()
         eatNow.title = "Eateries"
       
-        let signupVC = SignupViewController()
-        signupVC.eatNow = eatNow
-        let eatNavController = UINavigationController(rootViewController: signupVC)
+        let loginVC = LoginViewController()
+        loginVC.eatNow = eatNow
+        if NSUserDefaults.standardUserDefaults().valueForKey("hasSignedUp") == nil{
+            NSUserDefaults.standardUserDefaults().setBool(false, forKey: "signedUp")
+        }
+        
+        let eatNavController = UINavigationController(rootViewController: loginVC)
         eatNavController.navigationBar.barStyle = .Black
         
         window?.rootViewController = eatNavController

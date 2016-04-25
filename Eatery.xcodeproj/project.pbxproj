@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		022ED7451CCD1E6500379F53 /* SignupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 022ED7441CCD1E6500379F53 /* SignupViewController.swift */; };
 		022ED7471CCD1E7000379F53 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 022ED7461CCD1E7000379F53 /* LoginViewController.swift */; };
+		022ED74B1CCD6A6400379F53 /* KeychainWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 022ED74A1CCD6A6400379F53 /* KeychainWrapper.m */; };
 		1D07D27B1C86F9D400FABB7B /* UIScreen+Device.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D07D27A1C86F9D400FABB7B /* UIScreen+Device.swift */; };
 		1D0A94441CC84280000B3974 /* UIViewController+Animation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D0A94431CC84280000B3974 /* UIViewController+Animation.swift */; };
 		4113D87ABA9342892F714F34 /* Pods_Today_Extension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4BA4E2B16C2C3A450EF353BE /* Pods_Today_Extension.framework */; };
@@ -171,6 +172,9 @@
 		019B364D52B66BC8F8B6C25F /* Pods-Eatery Watch App.app store.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Eatery Watch App.app store.xcconfig"; path = "Pods/Target Support Files/Pods-Eatery Watch App/Pods-Eatery Watch App.app store.xcconfig"; sourceTree = "<group>"; };
 		022ED7441CCD1E6500379F53 /* SignupViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignupViewController.swift; sourceTree = "<group>"; };
 		022ED7461CCD1E7000379F53 /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
+		022ED7481CCD6A6300379F53 /* Eatery-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Eatery-Bridging-Header.h"; sourceTree = "<group>"; };
+		022ED7491CCD6A6400379F53 /* KeychainWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeychainWrapper.h; sourceTree = "<group>"; };
+		022ED74A1CCD6A6400379F53 /* KeychainWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeychainWrapper.m; sourceTree = "<group>"; };
 		063BB995A36FB9F04B5D1D5F /* Pods-Eatery Watch App.external beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Eatery Watch App.external beta.xcconfig"; path = "Pods/Target Support Files/Pods-Eatery Watch App/Pods-Eatery Watch App.external beta.xcconfig"; sourceTree = "<group>"; };
 		0F6E64ED32027E3E529637D0 /* Pods_Eatery_Watch_App_Extension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Eatery_Watch_App_Extension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1D07D27A1C86F9D400FABB7B /* UIScreen+Device.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIScreen+Device.swift"; sourceTree = "<group>"; };
@@ -480,8 +484,11 @@
 				C0497AF21B64AA1800AC1C6C /* Global */,
 				C0497AEE1B64AA1800AC1C6C /* Extensions */,
 				C0F182F81B674B1300063D77 /* AppDelegate.swift */,
+				022ED7491CCD6A6400379F53 /* KeychainWrapper.h */,
+				022ED74A1CCD6A6400379F53 /* KeychainWrapper.m */,
 				E99C63E91B6EDE12000A5886 /* Info.plist */,
 				6E0B505D1CB0B65B0054F600 /* Sort.swift */,
+				022ED7481CCD6A6300379F53 /* Eatery-Bridging-Header.h */,
 			);
 			path = Eatery;
 			sourceTree = "<group>";
@@ -731,7 +738,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftMigration = 0700;
-				LastSwiftUpdateCheck = 0720;
+				LastSwiftUpdateCheck = 0730;
 				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = CUAppDev;
 				TargetAttributes = {
@@ -1086,6 +1093,7 @@
 				D10246291C7A31C4000D5CD8 /* LookAheadViewController.swift in Sources */,
 				C0497B161B64AA1800AC1C6C /* TimeFactory.swift in Sources */,
 				D102463C1C7A3239000D5CD8 /* EateryMenuTableViewCell.swift in Sources */,
+				022ED74B1CCD6A6400379F53 /* KeychainWrapper.m in Sources */,
 				C0497AF61B64AA1800AC1C6C /* Keys.swift in Sources */,
 				60FF4E1C1CBEE03E0051FD01 /* MapViewController.swift in Sources */,
 				1D0A94441CC84280000B3974 /* UIViewController+Animation.swift in Sources */,
@@ -1689,6 +1697,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = org.cuappdev.eatery;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "$(PROJECT_UDID)";
+				SWIFT_OBJC_BRIDGING_HEADER = "Eatery/Eatery-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
@@ -1748,6 +1757,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = org.cuappdev.eatery;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "$(PROJECT_UDID)";
+				SWIFT_OBJC_BRIDGING_HEADER = "Eatery/Eatery-Bridging-Header.h";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -1806,6 +1816,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = org.cuappdev.eatery;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "$(PROJECT_UDID)";
+				SWIFT_OBJC_BRIDGING_HEADER = "Eatery/Eatery-Bridging-Header.h";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -1864,6 +1875,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = org.cuappdev.eatery;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "$(PROJECT_UDID)";
+				SWIFT_OBJC_BRIDGING_HEADER = "Eatery/Eatery-Bridging-Header.h";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
