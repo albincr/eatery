@@ -116,7 +116,7 @@ class SignupViewController: UIViewController {
         
         goToLoginLabel = UILabel(frame: CGRect(x: width/2-128, y: height-40, width: 176, height: 25))
         goToLoginLabel.text = "Already have an account?"
-        goToLoginLabel.font = UIFont(name: "HelveticaNeue-Medium", size: 14)
+        goToLoginLabel.font = UIFont(name: "HelveticaNeue", size: 14)
         goToLoginLabel.textAlignment = .Center
         goToLoginLabel.textColor = UIColor.whiteColor()
         

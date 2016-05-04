@@ -60,7 +60,7 @@ class LoginViewController: UIViewController {
         phoneNumberField.keyboardType = .NumberPad
         forgotPasswordButton = UIButton(frame: CGRect(x: width/4, y: passwordField.frame.origin.y + 50, width: width/2, height: 20))
         forgotPasswordButton.setTitle("Forgot your password?", forState: .Normal)
-        forgotPasswordButton.titleLabel!.font =  UIFont(name: "HelveticaNeue-Medium", size: 14)
+        forgotPasswordButton.titleLabel!.font =  UIFont(name: "HelveticaNeue", size: 14)
         forgotPasswordButton.addTarget(self, action: #selector(LoginViewController.forgotPassword(_:)), forControlEvents: .TouchUpInside)
         self.view.addSubview(passwordField)
         self.view.addSubview(phoneNumberField)
@@ -120,7 +120,7 @@ class LoginViewController: UIViewController {
         goToSignupButton.addTarget(self, action: #selector(LoginViewController.goToSignupVC(_:)), forControlEvents: .TouchUpInside)
         goToSignupLabel = UILabel(frame: CGRect(x: width/2-14, y: height-40, width: 90, height: 25))
         goToSignupLabel.text = "for Beacons."
-        goToSignupLabel.font = UIFont(name: "HelveticaNeue-Medium", size: 14)
+        goToSignupLabel.font = UIFont(name: "HelveticaNeue", size: 14)
         goToSignupLabel.textColor = UIColor.whiteColor()
         self.view.addSubview(goToSignupButton)
         self.view.addSubview(goToSignupLabel)
