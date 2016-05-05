@@ -2,90 +2,92 @@
 //  BeaconsFeedViewController.swift
 //  Eatery
 //
-//  Created by Monica Ong on 3/13/16.
+//  Created by Monica Ong on 4/27/16.
 //  Copyright © 2016 CUAppDev. All rights reserved.
 //
 
 import UIKit
 
-private let reuseIdentifier = "BeaconsFeedCell"
-
-public enum BeaconType: String {
-    case Attending = "Attending"
-    case Feed = "Feed"
+enum BeaconType: String{
+    case Attending
+    case Feed
 }
 
-class BeaconsFeedViewController: UICollectionViewController {
+class BeaconsFeedViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate{
     
-    private var sectionHeaderHeight: CGFloat = 40.0
-    private var sections: [BeaconType] = [.Attending, .Feed]
+    var collectionView: UICollectionView!
+    private var eventType: [BeaconType] = [.Attending, .Feed]
     private var eventsAttending: [BeaconsEvent] = []
-    private var eventsNewsFeed: [BeaconsEvent] = [] //Organized by date
+    private var eventsNewsFeed: [BeaconsEvent] = [] //N2Self: Organized by date
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
+    view.backgroundColor = UIColor(white: 0.93, alpha: 1)
+        
+    //Set up collection view
+    setupCollectionView()
+    
+    view.addSubview(self.collectionView)
+    
+    //set up sample data
+    eventsAttending.append(BeaconsEvent(date: date("4/28/2016 18:30"), title: "Come eat with me at Mattin's!", creator: "Lucas", joined: true, attendees: ["Felipe, Byron"]))
+    eventsAttending.append(BeaconsEvent(date: date("5/01/2016 12:00"), title: "Come eat with me at Statler!", creator: "Andrew", joined: true, attendees: ["Felicia", "Patricia"]))
+    eventsNewsFeed.append(BeaconsEvent(date: date("4/20/2016 16:00"), title: "Come eat with at Castle Black!", creator: "Jon's wolf", joined: false))
+    eventsNewsFeed.append(BeaconsEvent(date: date("4/29/2016 8:30"), title: "Come eat with me!", creator: "Melinda", joined: false, attendees: ["Daenerys", "Jon", "Tyrion"]))
 
-        // Register cell classes & nib
-        self.collectionView!.registerClass(UICollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
-        self.collectionView?.registerNib(UINib(nibName: "BeaconsFeedCell", bundle: nil), forCellWithReuseIdentifier: reuseIdentifier)
-
-        //View appearance
-        view.backgroundColor = UIColor(red: 245/255.0, green: 245/255.0, blue: 245/255.0, alpha: 1.0)
+    
+    
+        
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    
+    func setupCollectionView() {
+        let layout = EateriesCollectionViewTableLayout()
+        collectionView = UICollectionView(frame: UIScreen.mainScreen().bounds, collectionViewLayout: layout)
+        collectionView.dataSource = self
+        collectionView.delegate = self
+        collectionView.registerClass(UICollectionViewCell.self, forCellWithReuseIdentifier: "BeaconsFeedCell")
+        collectionView.registerNib(UINib(nibName: "BeaconsFeedCell", bundle: nil), forCellWithReuseIdentifier: "BeaconsFeedCell")
+        collectionView.backgroundColor = UIColor(red: 245/255.0, green: 245/255.0, blue: 245/255.0, alpha: 1.0)
+        collectionView.contentInset = UIEdgeInsets(top: 16, left: 0, bottom: 0, right: 0)
+        collectionView.showsVerticalScrollIndicator = false
     }
-
+    
     // MARK: UICollectionViewDataSource
-
-    override func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
-        var section = 0
-        if !eventsAttending.isEmpty{
-            section += 1
-        }
-        if !eventsNewsFeed.isEmpty{
-            section += 1
-        }
+    
+    func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
         
-        return section
+        return 2 //Newsfeed Section & Attending Section
         
     }
-
-    override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        switch sections[section]{
+    
+    func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        switch eventType[section]{
         case .Attending: return eventsAttending.count
         case .Feed: return eventsNewsFeed.count
-        default: return 1
         }
     }
     
-    override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier(reuseIdentifier, forIndexPath: indexPath) as! BeaconsFeedCell
+    func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("BeaconsFeedCell", forIndexPath: indexPath) as! BeaconsFeedCell
         var event = eventsAttending[indexPath.row]
-        switch sections[indexPath.section]{
+        switch eventType[indexPath.section]{
         case .Attending:
             event = eventsAttending[indexPath.row]
         case .Feed:
             event = eventsNewsFeed[indexPath.row]
-        default:
-            event = eventsAttending[indexPath.row]
         }
         
         cell.time.text = getTimeFromDate(event.date)
         cell.eventTitle.text = event.title
         cell.creatorName.text = event.creator
         //Set creator pro pic
-        cell.creatorProPic.image = UIImage(named: "\(event.creator)")
+        cell.creatorProPic.image = UIImage(named: "profile")
         //Set joinbutton based if joined or not
         if event.joined{
-            cell.joinButton.setImage(UIImage(named: "Joined"), forState: .Normal)
+            cell.joined()
         } else{
-            cell.joinButton.setImage(UIImage(named: "NotJoined"), forState: .Normal)
+            cell.unjoined()
         }
         return cell
     }
@@ -98,36 +100,19 @@ class BeaconsFeedViewController: UICollectionViewController {
         dateFormatter.dateFormat = "h:mm"
         return dateFormatter.stringFromDate(date)
     }
-
-    // MARK: UICollectionViewDelegate
-
-    /*
-    // Uncomment this method to specify if the specified item should be highlighted during tracking
-    override func collectionView(collectionView: UICollectionView, shouldHighlightItemAtIndexPath indexPath: NSIndexPath) -> Bool {
-        return true
-    }
-    */
-
-    /*
-    // Uncomment this method to specify if the specified item should be selected
-    override func collectionView(collectionView: UICollectionView, shouldSelectItemAtIndexPath indexPath: NSIndexPath) -> Bool {
-        return true
-    }
-    */
-
-    /*
-    // Uncomment these methods to specify if an action menu should be displayed for the specified item, and react to actions performed on the item
-    override func collectionView(collectionView: UICollectionView, shouldShowMenuForItemAtIndexPath indexPath: NSIndexPath) -> Bool {
-        return false
-    }
-
-    override func collectionView(collectionView: UICollectionView, canPerformAction action: Selector, forItemAtIndexPath indexPath: NSIndexPath, withSender sender: AnyObject?) -> Bool {
-        return false
-    }
-
-    override func collectionView(collectionView: UICollectionView, performAction action: Selector, forItemAtIndexPath indexPath: NSIndexPath, withSender sender: AnyObject?) {
     
+    //String must have the format: yyyy/MM/dd HH:mm
+        //HH:mm in 24 hours time
+    private func date(date: String) -> NSDate{
+        let formatter = NSDateFormatter()
+        formatter.dateFormat = "MM/dd/yyyy HH:mm"
+        return formatter.dateFromString(date)!
     }
-    */
-
+    
+    // MARK: UICollectionViewDelegate
+    // N2Self: Do I need this?
+    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+        return CGSize(width: collectionView.frame.width, height: 16)
+    }
+    
 }

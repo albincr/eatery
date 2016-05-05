@@ -94,9 +94,11 @@
 		D102463C1C7A3239000D5CD8 /* EateryMenuTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D10246381C7A3239000D5CD8 /* EateryMenuTableViewCell.swift */; };
 		D102463D1C7A3239000D5CD8 /* EateryMenuTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D10246391C7A3239000D5CD8 /* EateryMenuTableViewCell.xib */; };
 		D1EE777A1C702469001823D8 /* String+Manipulation.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1EE77791C702469001823D8 /* String+Manipulation.swift */; };
+		DD0CB1C01CD1873E00050E6E /* BeaconsFeedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD0CB1BF1CD1873E00050E6E /* BeaconsFeedViewController.swift */; };
+		DD0CB1C21CD1932F00050E6E /* BeaconsEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD0CB1C11CD1932F00050E6E /* BeaconsEvent.swift */; };
+		DD0CB1C41CD194A700050E6E /* JoinButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD0CB1C31CD194A700050E6E /* JoinButton.swift */; };
 		DDD13EC81C9F3DA90034710A /* BeaconsFeedCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDD13EC61C9F3DA90034710A /* BeaconsFeedCell.swift */; };
 		DDD13EC91C9F3DA90034710A /* BeaconsFeedCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = DDD13EC71C9F3DA90034710A /* BeaconsFeedCell.xib */; };
-		DDD13ECB1C9F3DB70034710A /* BeaconsFeedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDD13ECA1C9F3DB70034710A /* BeaconsFeedViewController.swift */; };
 		E93CD4171BE67AC400089CE5 /* MenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E93CD4161BE67AC400089CE5 /* MenuViewController.swift */; };
 		E93CD4191BE67C2300089CE5 /* TabbedPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E93CD4181BE67C2300089CE5 /* TabbedPageViewController.swift */; };
 		E93CD41B1BE67DB000089CE5 /* MealTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E93CD41A1BE67DB000089CE5 /* MealTableViewController.swift */; };
@@ -332,9 +334,11 @@
 		D10246381C7A3239000D5CD8 /* EateryMenuTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EateryMenuTableViewCell.swift; sourceTree = "<group>"; };
 		D10246391C7A3239000D5CD8 /* EateryMenuTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EateryMenuTableViewCell.xib; sourceTree = "<group>"; };
 		D1EE77791C702469001823D8 /* String+Manipulation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+Manipulation.swift"; sourceTree = "<group>"; };
+		DD0CB1BF1CD1873E00050E6E /* BeaconsFeedViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BeaconsFeedViewController.swift; sourceTree = "<group>"; };
+		DD0CB1C11CD1932F00050E6E /* BeaconsEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BeaconsEvent.swift; sourceTree = "<group>"; };
+		DD0CB1C31CD194A700050E6E /* JoinButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JoinButton.swift; sourceTree = "<group>"; };
 		DDD13EC61C9F3DA90034710A /* BeaconsFeedCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BeaconsFeedCell.swift; sourceTree = "<group>"; };
 		DDD13EC71C9F3DA90034710A /* BeaconsFeedCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BeaconsFeedCell.xib; sourceTree = "<group>"; };
-		DDD13ECA1C9F3DB70034710A /* BeaconsFeedViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BeaconsFeedViewController.swift; sourceTree = "<group>"; };
 		DFAF014CFABFD9D8E6AC7021 /* Pods-Eatery Watch App Extension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Eatery Watch App Extension.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Eatery Watch App Extension/Pods-Eatery Watch App Extension.debug.xcconfig"; sourceTree = "<group>"; };
 		E0C3D466EB4300A3FE69189D /* Pods-Today Extension.app store.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Today Extension.app store.xcconfig"; path = "Pods/Target Support Files/Pods-Today Extension/Pods-Today Extension.app store.xcconfig"; sourceTree = "<group>"; };
 		E0FBC7365BFDDFC4EA5118D6 /* Pods-Today Extension.external beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Today Extension.external beta.xcconfig"; path = "Pods/Target Support Files/Pods-Today Extension/Pods-Today Extension.external beta.xcconfig"; sourceTree = "<group>"; };
@@ -453,12 +457,12 @@
 		1D10A4151C67FF0C00772D31 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				DDD13ECA1C9F3DB70034710A /* BeaconsFeedViewController.swift */,
 				E9EC978E1BFD1B4B00D06823 /* EateriesGridViewController.swift */,
 				E93CD4161BE67AC400089CE5 /* MenuViewController.swift */,
 				E93CD4181BE67C2300089CE5 /* TabbedPageViewController.swift */,
 				E93CD41A1BE67DB000089CE5 /* MealTableViewController.swift */,
 				D10246281C7A31C3000D5CD8 /* LookAheadViewController.swift */,
+				DD0CB1BF1CD1873E00050E6E /* BeaconsFeedViewController.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -624,6 +628,7 @@
 				C0497ACB1B64AA1800AC1C6C /* Data */,
 				C0497AF21B64AA1800AC1C6C /* Global */,
 				C0497AEE1B64AA1800AC1C6C /* Extensions */,
+				DD0CB1C31CD194A700050E6E /* JoinButton.swift */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -631,6 +636,7 @@
 		C0497ACB1B64AA1800AC1C6C /* Data */ = {
 			isa = PBXGroup;
 			children = (
+				DD0CB1C11CD1932F00050E6E /* BeaconsEvent.swift */,
 				C0F182FB1B674DCB00063D77 /* AnalyticsManager.swift */,
 				FAA912BD1BE6A035003475A8 /* Eatery+Extensions.swift */,
 				E9CFC0A61C0E44D900ED884A /* Extra Eatery Data */,
@@ -1354,8 +1360,10 @@
 				E93CD41B1BE67DB000089CE5 /* MealTableViewController.swift in Sources */,
 				95434FB71BD8699F003612DB /* ADScreenCapture.swift in Sources */,
 				95434FBC1BD8699F003612DB /* _FBTweakDictionaryViewController.m in Sources */,
-				DDD13ECB1C9F3DB70034710A /* BeaconsFeedViewController.swift in Sources */,
+				DD0CB1C01CD1873E00050E6E /* BeaconsFeedViewController.swift in Sources */,
+				DD0CB1C21CD1932F00050E6E /* BeaconsEvent.swift in Sources */,
 				6083A8AD1C6E718A002A08BF /* EateriesCollectionSearchbarHeaderView.swift in Sources */,
+				DD0CB1C41CD194A700050E6E /* JoinButton.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -10,11 +10,11 @@ import UIKit
 
 class BeaconsEvent: NSObject {
     
-    public var date: NSDate
-    public var title: String
-    public var joined: Bool
-    public var attendees: [String] //could be an empty array
-    public var creator: String
+    var date: NSDate
+    var title: String
+    var joined: Bool
+    var attendees: [String] //could be an empty array
+    var creator: String
     
     init(date: NSDate, title: String, creator: String, joined: Bool, attendees: [String] = []) {
 //        super.init()
